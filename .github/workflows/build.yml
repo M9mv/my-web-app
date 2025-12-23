@@ -8,22 +8,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
       - name: install rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android
+
       - name: install android sdk
         uses: android-actions/setup-android@v3
-      - name: build app
+
+      - name: install dependencies
         run: |
           npm install
-          npm install @tauri-apps/cli
+          npm install @tauri-apps/cli @tauri-apps/api
+
+      - name: initialize and build android
+        run: |
+          # نستخدم npx لضمان تشغيل النسخة الصحيحة
           npx tauri android init
           npx tauri android build --apk
+
       - name: upload apk
         uses: actions/upload-artifact@v4
         with:
