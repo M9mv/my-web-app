@@ -1,0 +1,29 @@
+{
+  "productName": "MyMobileApp",
+  "version": "0.1.0",
+  "identifier": "com.mysite.app",
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "devUrl": "https://your-website.com",
+    "frontendDist": "https://your-website.com"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "My App",
+        "url": "https://notexaii.web.app"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "identifier": "com.mysite.app",
+    "icon": []
+  }
+}
+
