@@ -1,31 +1,31 @@
-name: Build App
-on: [push]
+name: Build Android APK
+on:
+  push:
+    branches: [main]
 
 jobs:
   build:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - setup-node:
-          node-version: 20
-      - name: install Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: install dependencies (ubuntu only)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
-      - name: install frontend dependencies
-        run: npm install
-      - name: Build the app
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup node
+        uses: actions/setup-node@v4
         with:
-          tagName: v__VERSION__
-          releaseName: "App v__VERSION__"
-          releaseBody: "See the assets below to download the app"
-          releaseDraft: true
-          prerelease: false
-
+          node-version: 20
+      - name: install rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+      - name: install android sdk
+        uses: android-actions/setup-android@v3
+      - name: build app
+        run: |
+          npm install
+          npm install @tauri-apps/cli
+          npx tauri android init
+          npx tauri android build --apk
+      - name: upload apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-app-apk
+          path: src-tauri/gen/android/*/app/build/outputs/apk/release/*.apk
